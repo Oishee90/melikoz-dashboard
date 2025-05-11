@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const Header = () => {
   return (
-    <div className="flex items-center justify-between p-6 bg-[#009038] dark:bg-[#374151] text-[#020202] dark:text-white">
+    <div className="flex items-center justify-between py-10 bg-[#009038] dark:bg-[#374151] text-[#020202] dark:text-white">
       {/* Title */}
       <div></div>
 
@@ -26,13 +26,6 @@ const Header = () => {
             className="flex items-center space-x-9 cursor-pointer"
             // onClick={toggleDropdown}
           >
-            <img
-              src={
-                "https://res.cloudinary.com/dhlgk023u/image/upload/v1738496016/9334243_puz7m4.jpg"
-              }
-              alt="Profile"
-              className="w-10 h-10 rounded-full"
-            />
             <div>
               {/* {isDropdownOpen ? (
                 <FaChevronUp className="text-[#000000] dark:text-white w-[20px] h-[20px]" />

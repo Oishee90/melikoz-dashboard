@@ -19,14 +19,29 @@ const Setnew = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [confirmpassword, setConfirmPassword] = useState("");
   const [showconfirmPassword, setConfirmShowPassword] = useState(false);
-
+  const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
   const togglenewPasswordVisibility = () => {
     setConfirmShowPassword((prev) => !prev);
   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
+    if (password !== confirmpassword) {
+      setErrorMessage("❌ Passwords do not match!");
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Simulate password reset logic here
+    setTimeout(() => {
+      // Navigate to login page after resetting password
+      navigate("/login");
+    }, 2000); // Simulate network request
+  };
   return (
     <div className="flex lg:flex-row flex-col justify-between items-center h-full 2xl:h-screen ">
       {/* Left Form Section */}

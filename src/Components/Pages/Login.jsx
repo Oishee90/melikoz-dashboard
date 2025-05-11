@@ -21,7 +21,20 @@ const Login = () => {
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+  const navigate = useNavigate();
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+  
+    // Admin Login Check
+    if (email === "admin@gmail.com" && password === "pass123456") {
+      navigate("/admin/dashboard"); // ✅ Redirect to admin dashboard
+    } else {
+      setErrorMessage("Invalid email or password.");
+    }
+  };
+  
   return (
     <div className="flex lg:flex-row flex-col justify-between items-center h-full 2xl:h-screen ">
       {/* Left Form Section */}
@@ -38,7 +51,7 @@ const Login = () => {
           </p>
           <div></div>
           <form
-            // onSubmit={handleSubmit}
+            onSubmit={handleSubmit}
             className="w-full space-y-3 mt-6  justify-center items-center"
           >
             <div className="flex flex-col mt-2 mb-7">

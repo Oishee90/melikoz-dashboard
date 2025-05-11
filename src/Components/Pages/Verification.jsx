@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import bg from "../../assets/otp.png";
 import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
+import { div } from "framer-motion/client";
+import Setnew from "./Setnew";
 const Verification = () => {
   const [code, setCode] = useState(["", "", "", ""]);
   const [successMessage, setSuccessMessage] = useState(""); // Success message state
   const navigate = useNavigate();
+  const [newpass, setNew] = useState("");
   // Handle input change
   const handleInputChange = (value, index) => {
     if (!/^\d*$/.test(value)) return; // Allow only numeric input
@@ -46,13 +49,17 @@ const Verification = () => {
       setTimeout(() => {
         setSuccessMessage(""); // Clear message after a few seconds
       }, 3000);
-      navigate("/setNew");
+      setNew(true);
     } else {
       setSuccessMessage("❌ Please enter a valid 4-digit code.");
+      setNew(false);
     }
   };
 
   return (
+    <div>
+           {!newpass? (
+ 
     <div className="flex 2xl:flex-row flex-col justify-between items-center h-full 2xl:h-screen">
       {/* Left Form Section */}
       <div className="w-full 2xl:w-1/2 flex flex-col  p-8  h-full montserrat">
@@ -101,6 +108,11 @@ const Verification = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-[#69696980] to-[#07070780]"></div>
       </div>
     </div>
+     ) : (
+      // Show Verification Section
+   <Setnew></Setnew>
+    )}
+       </div>
   );
 };
 
