@@ -28,8 +28,8 @@ const Login = () => {
     setErrorMessage("");
   
     // Admin Login Check
-    if (email === "admin@gmail.com" && password === "pass123456") {
-      navigate("/admin/dashboard"); // ✅ Redirect to admin dashboard
+    if (email === "admin@gmail.com" && password === "123456") {
+      navigate("/"); // ✅ Redirect to admin dashboard
     } else {
       setErrorMessage("Invalid email or password.");
     }

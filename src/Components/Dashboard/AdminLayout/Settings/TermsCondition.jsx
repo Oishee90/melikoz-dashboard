@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import JoditEditor from "jodit-react";
 import { GrUpdate } from "react-icons/gr";
+import Swal from "sweetalert2";
 const TermsCondition = () => {
   const [content, setContent] = useState(`
     <h3 class="paragraph">When do we collect information?</h3>
@@ -23,7 +24,14 @@ const TermsCondition = () => {
     // Optional: Disable other features if necessary
     buttons: ["bold", "italic", "underline", "left", "center", "right"],
   };
-
+  const handleUpdate = () => {
+    Swal.fire({
+      icon: "success",
+      title: "Updated Successfully!",
+      text: "Your data has been updated.",
+      confirmButtonColor: "#009038",
+    });
+  };
   return (
     <div className="h-full bg-white0 p-5">
       <div className="w-full  p-6 ">
@@ -39,7 +47,7 @@ const TermsCondition = () => {
           />
         </div>
         <div
-          // onClick={handleUpdate}
+          onClick={handleUpdate}
           className="cursor-pointer mt-6 px-4"
         >
           <button className="px-3 py-2 flex items-center gap-3 poppins font-medium rounded-xl bg-[#009038] text-white cursor-pointer ">

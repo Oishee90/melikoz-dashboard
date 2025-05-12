@@ -6,7 +6,7 @@ import { FaApple } from "react-icons/fa6";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import bg from "../../assets/set.png";
 import logo from "../../assets/logo.png";
-
+import Swal from "sweetalert2";
 import { FcGoogle } from "react-icons/fc";
 
 const Setnew = () => {
@@ -30,18 +30,35 @@ const Setnew = () => {
     e.preventDefault();
 
     if (password !== confirmpassword) {
-      setErrorMessage("❌ Passwords do not match!");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "❌ Passwords do not match!",
+      });
       return;
     }
 
     setIsLoading(true);
 
-    // Simulate password reset logic here
+    // Simulate password reset logic
     setTimeout(() => {
-      // Navigate to login page after resetting password
-      navigate("/login");
-    }, 2000); // Simulate network request
+      setIsLoading(false);
+
+      Swal.fire({
+        title: "Success!",
+        text: "Your password has been reset.",
+        icon: "success",
+        confirmButtonText: "Go to Login",
+        confirmButtonColor: "#28a745",
+        allowOutsideClick: false, // prevents accidental closing
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
+    }, 2000);
   };
+
   return (
     <div className="flex lg:flex-row flex-col justify-between items-center h-full 2xl:h-screen ">
       {/* Left Form Section */}
@@ -56,7 +73,7 @@ const Setnew = () => {
 
           <div></div>
           <form
-            // onSubmit={handleSubmit}
+            onSubmit={handleSubmit}
             className="w-full space-y-3 mt-6  justify-center items-center"
           >
             <div className="flex flex-col mt-6 mb-9">

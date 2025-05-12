@@ -31,7 +31,7 @@ const router = createBrowserRouter([
     element: <Setnew></Setnew>,
   },
   {
-    path: "/",
+    path: "/", 
     element: <Root></Root>,
     children: [
       {
