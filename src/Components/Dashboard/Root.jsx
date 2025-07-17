@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import AdminSidebar from "./Sidebar/AdminSidebar";
 
 import MainHeader from "./MainHeader";
+import Header from "./Header";
 
 const Root = () => {
   return (
@@ -15,7 +16,7 @@ const Root = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col ml-[280px]">
         {/* Header */}
-        <MainHeader></MainHeader>
+        <Header></Header>
 
         {/* Dynamically Render Child Components */}
         <main className="flex-1 bg-white dark:bg-[#1F2937] p-4 overflow-y-auto">

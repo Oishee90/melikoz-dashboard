@@ -12,6 +12,9 @@ import Verification from "./Components/Pages/Verification";
 import Setnew from "./Components/Pages/Setnew";
 import Privacy from "./Components/Dashboard/AdminLayout/Settings/Privacy";
 import TermsCondition from "./Components/Dashboard/AdminLayout/Settings/TermsCondition";
+import User from "./Components/Dashboard/AdminLayout/User";
+import Services from "./Components/Dashboard/AdminLayout/Services";
+import AdminProfileSettings from "./Components/Dashboard/AdminLayout/AdminProfileSettings";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +34,7 @@ const router = createBrowserRouter([
     element: <Setnew></Setnew>,
   },
   {
-    path: "/", 
+    path: "/",
     element: <Root></Root>,
     children: [
       {
@@ -39,12 +42,20 @@ const router = createBrowserRouter([
         element: <AdminDashboard></AdminDashboard>,
       },
       {
-        path: "/privacy",
-        element: <Privacy></Privacy>,
+        path: "/users",
+        element: <User></User>,
       },
       {
-        path: "/terms",
-        element: <TermsCondition></TermsCondition>,
+        path: "/services",
+        element: <Services></Services>,
+      },
+      {
+        path: "/services",
+        element: <Services></Services>,
+      },
+      {
+        path: "/settings",
+        element: <AdminProfileSettings></AdminProfileSettings>,
       },
     ],
   },

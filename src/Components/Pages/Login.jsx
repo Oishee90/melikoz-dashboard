@@ -26,15 +26,15 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrorMessage("");
-  
+
     // Admin Login Check
-    if (email === "admin@gmail.com" && password === "123456") {
+    if (email === "admin@gmail.com" && password === "admin@gmail.com") {
       navigate("/"); // ✅ Redirect to admin dashboard
     } else {
       setErrorMessage("Invalid email or password.");
     }
   };
-  
+
   return (
     <div className="flex lg:flex-row flex-col justify-between items-center h-full 2xl:h-screen ">
       {/* Left Form Section */}
@@ -54,6 +54,7 @@ const Login = () => {
             onSubmit={handleSubmit}
             className="w-full space-y-3 mt-6  justify-center items-center"
           >
+            
             <div className="flex flex-col mt-2 mb-7">
               <label
                 htmlFor="email"
@@ -116,6 +117,11 @@ const Login = () => {
                 Forgot Password?
               </NavLink>
             </div>
+            {errorMessage && (
+              <div className="mt-4  text-red-700 px-4 py-2 rounded text-sm animate-pulse">
+                {errorMessage}
+              </div>
+            )}
             <button
               type="submit"
               className="px-12 bg-[#009038] text-[#000000] p-2 rounded-full montserrat font-bold"
