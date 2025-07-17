@@ -15,6 +15,7 @@ import TermsCondition from "./Components/Dashboard/AdminLayout/Settings/TermsCon
 import User from "./Components/Dashboard/AdminLayout/User";
 import Services from "./Components/Dashboard/AdminLayout/Services";
 import AdminProfileSettings from "./Components/Dashboard/AdminLayout/AdminProfileSettings";
+import AI from "./Components/Dashboard/AdminLayout/AI";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: "/settings",
         element: <AdminProfileSettings></AdminProfileSettings>,
+      },
+      {
+        path: "/aioversight",
+        element: <AI></AI>,
       },
     ],
   },

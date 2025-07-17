@@ -1,94 +1,75 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { FaSearch } from "react-icons/fa";
 
-// Fake Data
-const fakeUsers = [
+// Updated Service Data
+const fakeServices = [
   {
-    id: 1,
-    name: "Sophia Ahmed",
-    email: "sophia@example.com",
-    role: "Provider",
-    status: "Verified",
+    id: "SVC001",
+    type: "Conveyancing",
+    client: "Michael Ross",
+    provider: "Sophia Ahmed",
+    status: "Completed",
+    location: "Sydney, NSW",
+    requested: "2025-07-01",
   },
   {
-    id: 2,
-    name: "Michael Ross",
-    email: "michael@example.com",
-    role: "Client",
+    id: "SVC002",
+    type: "Title Review",
+    client: "Emily Brown",
+    provider: "Linda Zhang",
+    status: "In Progress",
+    location: "Melbourne, VIC",
+    requested: "2025-07-05",
+  },
+  {
+    id: "SVC003",
+    type: "Contract Review",
+    client: "Nora Ali",
+    provider: "Shohag Islam",
     status: "Pending",
+    location: "Brisbane, QLD",
+    requested: "2025-07-10",
   },
   {
-    id: 3,
-    name: "Linda Zhang",
-    email: "linda@example.com",
-    role: "Provider",
-    status: "Verified",
+    id: "SVC004",
+    type: "Legal Advice",
+    client: "Ariana Gomez",
+    provider: "Khan Rafi",
+    status: "Completed",
+    location: "Perth, WA",
+    requested: "2025-07-03",
   },
   {
-    id: 4,
-    name: "Shohag Islam",
-    email: "shohag@example.com",
-    role: "Provider",
-    status: "Verified",
-  },
-  {
-    id: 5,
-    name: "Ariana Gomez",
-    email: "ariana@example.com",
-    role: "Client",
-    status: "Pending",
-  },
-  {
-    id: 6,
-    name: "Khan Rafi",
-    email: "rafi@example.com",
-    role: "Provider",
-    status: "Verified",
-  },
-  {
-    id: 7,
-    name: "Emily Brown",
-    email: "emily@example.com",
-    role: "Client",
-    status: "Verified",
-  },
-  {
-    id: 8,
-    name: "Mizanur Rahman",
-    email: "mizan@example.com",
-    role: "Provider",
-    status: "Pending",
-  },
-  {
-    id: 9,
-    name: "Nora Ali",
-    email: "nora@example.com",
-    role: "Client",
-    status: "Verified",
+    id: "SVC005",
+    type: "Pre-Purchase Report",
+    client: "Linda Zhang",
+    provider: "Mizanur Rahman",
+    status: "In Progress",
+    location: "Adelaide, SA",
+    requested: "2025-07-12",
   },
 ];
 
 const Services = () => {
-  const [users, setUsers] = useState(fakeUsers);
+  const [services, setServices] = useState(fakeServices);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 4;
+  const servicesPerPage = 4;
 
-  // Filtered & Paginated Users
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredServices = services.filter((s) =>
+    s.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  const indexOfLast = currentPage * usersPerPage;
-  const indexOfFirst = indexOfLast - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+  const indexOfLast = currentPage * servicesPerPage;
+  const indexOfFirst = indexOfLast - servicesPerPage;
+  const currentServices = filteredServices.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredServices.length / servicesPerPage);
 
   const handleDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "This user will be deleted!",
+      text: "This service record will be deleted!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -96,11 +77,12 @@ const Services = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        setUsers(users.filter((user) => user.id !== id));
-        Swal.fire("Deleted!", "User has been removed.", "success");
+        setServices(services.filter((s) => s.id !== id));
+        Swal.fire("Deleted!", "Service has been removed.", "success");
       }
     });
   };
+
   return (
     <div className="container p-6 mx-auto">
       {/* Search */}
@@ -109,7 +91,7 @@ const Services = () => {
         <div className="relative">
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search by Service ID..."
             className="px-3 py-1 pl-8 border border-[#303030] rounded-lg"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -119,51 +101,50 @@ const Services = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white rounded-lg shadow  border border-[#C1C1C1]">
+      <div className="overflow-x-auto bg-white rounded-lg shadow border border-[#C1C1C1]">
         <table className="min-w-full table-auto roboto">
           <thead>
             <tr className="text-left font-medium text-xl text-[#303030] border-b border-b-[#C1C1C1]">
-              <th className="px-4 py-4">Name</th>
-              <th className="px-4 py-4">Email</th>
-              <th className="px-4 py-4">Role</th>
+              <th className="px-4 py-4">Service ID</th>
+              <th className="px-4 py-4">Type</th>
+              <th className="px-4 py-4">Client</th>
+              <th className="px-4 py-4">Provider</th>
               <th className="px-4 py-4">Status</th>
-              <th className="px-4 py-4">Actions</th>
+              <th className="px-4 py-4">Location</th>
+              <th className="px-4 py-4">Requested</th>
             </tr>
           </thead>
           <tbody>
-            {currentUsers.map((user) => (
+            {currentServices.map((service) => (
               <tr
-                key={user.id}
+                key={service.id}
                 className="text-lg font-normal border-b hover:bg-gray-50"
               >
-                <td className="px-4 py-4">{user.name}</td>
-                <td className="px-4 py-4">{user.email}</td>
-                <td className="px-4 py-4">{user.role}</td>
+                <td className="px-4 py-4">{service.id}</td>
+                <td className="px-4 py-4">{service.type}</td>
+                <td className="px-4 py-4">{service.client}</td>
+                <td className="px-4 py-4">{service.provider}</td>
                 <td className="px-4 py-4">
-                  {user.status === "Verified" ? (
-                    <span className="px-2 py-1 cursor-pointer text-base bg-[#6EEFC5] text-white rounded-lg text-bas">
-                      Verified
-                    </span>
-                  ) : (
-                    <span className="px-2 py-1 text-base cursor-pointer bg-[#FFCA6D] text-white  rounded-lg">
-                      Pending
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    className="px-3 py-1 text-base text-white bg-red-500 rounded-lg hover:bg-red-600"
+                  <span
+                    className={`px-2 py-1 rounded-lg text-white text-base ${
+                      service.status === "Completed"
+                        ? "bg-green-500"
+                        : service.status === "In Progress"
+                        ? "bg-blue-500"
+                        : "bg-yellow-500"
+                    }`}
                   >
-                    Delete
-                  </button>
+                    {service.status}
+                  </span>
                 </td>
+                <td className="px-4 py-4">{service.location}</td>
+                <td className="px-4 py-4">{service.requested}</td>
               </tr>
             ))}
-            {currentUsers.length === 0 && (
+            {currentServices.length === 0 && (
               <tr>
-                <td colSpan="5" className="py-4 text-center text-gray-400">
-                  No users found.
+                <td colSpan="8" className="py-4 text-center text-gray-400">
+                  No services found.
                 </td>
               </tr>
             )}
