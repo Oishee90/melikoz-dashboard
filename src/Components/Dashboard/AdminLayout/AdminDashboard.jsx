@@ -14,7 +14,6 @@ const data = [
   { month: "Jan", jobs: 100 },
   { month: "Feb", jobs: 180 },
   { month: "Mar", jobs: 150 },
-  { month: "Apr", jobs: 240 },
   { month: "May", jobs: 220 },
   { month: "Jun", jobs: 310 },
 ];
