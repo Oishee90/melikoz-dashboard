@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaUser } from "react-icons/fa";
+import Swal from "sweetalert2";
 const AdminProfileSettings = () => {
   const [image, setImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -19,8 +20,16 @@ const AdminProfileSettings = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted");
-    // Add form handling logic
+
+    // Simulate a successful save
+    Swal.fire({
+      icon: "success",
+      title: "Profile Updated",
+      text: "Your profile information has been successfully saved!",
+      confirmButtonColor: "#4F46E5", // Indigo
+    });
+
+    // You can also reset state or send to API here
   };
 
   return (
@@ -59,7 +68,8 @@ const AdminProfileSettings = () => {
           <input
             type="email"
             placeholder="admin@gmail.com"
-            className="w-full px-3 py-2 border  border-[#777777] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="w-full px-3 py-2 border bg-[#c7c2c2] placeholder:text-white  border-[#777777] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            disabled
           />
         </div>
 

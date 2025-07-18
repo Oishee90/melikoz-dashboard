@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-// import logo from "../assets/urgent-trades-logo.svg"; // <-- add your logo path
+import logo from "../../assets/logo.png"; // <-- add your logo path
 
 const VALID_CREDENTIALS = {
   email: "admin@gmail.com",
@@ -56,22 +56,14 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#168FE5] px-4">
-      <div className="w-full max-w-2xl p-8 bg-white rounded-md shadow-md">
+      <div className="w-full max-w-xl p-8 bg-white rounded-md shadow-md">
         {/* Logo */}
         <div className="flex flex-col items-center w-full mb-6">
           {/* Replace with your actual logo image */}
-          {/* <img src={logo} alt="Urgent Trades" className="h-10 mb-2" /> */}
-          <div className="leading-tight text-center">
-            <span className="block text-lg font-bold text-[#ff3b3b]">
-              Urgent
-            </span>
-            <span className="block text-sm font-medium text-[#1a73e8] -mt-1">
-              Trades
-            </span>
-          </div>
+          <img src={logo} alt="Urgent Trades" />
         </div>
 
-        <h1 className="mb-8 text-xl font-medium text-center">
+        <h1 className="mb-8 text-2xl font-medium text-center text-[#303030] font-roboto">
           Secure Dashboard Login
         </h1>
 
@@ -80,7 +72,7 @@ const Login = () => {
           <div>
             <label
               htmlFor="email"
-              className="block mb-1 text-sm font-medium text-gray-700"
+              className="block mb-1 text-lg font-medium text-[#6C6C6C]"
             >
               Email Address
             </label>
@@ -88,7 +80,7 @@ const Login = () => {
               id="email"
               type="email"
               autoComplete="username"
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 mb-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="admin@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -99,7 +91,7 @@ const Login = () => {
           <div>
             <label
               htmlFor="password"
-              className="block mb-1 text-sm font-medium text-gray-700"
+              className="block mb-1 text-lg font-medium text-[#6C6C6C]"
             >
               Password
             </label>
@@ -107,7 +99,7 @@ const Login = () => {
               id="password"
               type="password"
               autoComplete="current-password"
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 mb-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="••••••••••••••"
               value={pw}
               onChange={(e) => setPw(e.target.value)}
@@ -115,7 +107,7 @@ const Login = () => {
           </div>
 
           {/* Remember Me */}
-          <label className="inline-flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+          <label className="inline-flex items-center gap-2 text-sm text-[#6C6C6C] cursor-pointer select-none">
             <input
               type="checkbox"
               checked={remember}
