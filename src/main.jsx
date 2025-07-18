@@ -16,6 +16,8 @@ import User from "./Components/Dashboard/AdminLayout/User";
 import Services from "./Components/Dashboard/AdminLayout/Services";
 import AdminProfileSettings from "./Components/Dashboard/AdminLayout/AdminProfileSettings";
 import AI from "./Components/Dashboard/AdminLayout/AI";
+import Payment from "./Components/Dashboard/AdminLayout/Payment";
+import SystemLog from "./Components/Dashboard/AdminLayout/SystemLog";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +63,14 @@ const router = createBrowserRouter([
       {
         path: "/aioversight",
         element: <AI></AI>,
+      },
+      {
+        path: "/payment",
+        element: <Payment></Payment>,
+      },
+      {
+        path: "/system",
+        element: <SystemLog></SystemLog>,
       },
     ],
   },
