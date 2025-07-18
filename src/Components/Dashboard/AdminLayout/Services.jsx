@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Swal from "sweetalert2";
+
 import { FaSearch } from "react-icons/fa";
 
 // Updated Service Data
@@ -65,23 +65,6 @@ const Services = () => {
   const indexOfFirst = indexOfLast - servicesPerPage;
   const currentServices = filteredServices.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredServices.length / servicesPerPage);
-
-  const handleDelete = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "This service record will be deleted!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setServices(services.filter((s) => s.id !== id));
-        Swal.fire("Deleted!", "Service has been removed.", "success");
-      }
-    });
-  };
 
   return (
     <div className="container p-6 mx-auto">

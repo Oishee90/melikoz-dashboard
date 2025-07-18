@@ -56,23 +56,6 @@ const AI = () => {
   const currentItems = filteredFeedback.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredFeedback.length / itemsPerPage);
 
-  const handleDelete = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "This feedback will be deleted!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setFeedback(feedback.filter((f) => f.id !== id));
-        Swal.fire("Deleted!", "Feedback has been removed.", "success");
-      }
-    });
-  };
-
   return (
     <div className="container p-6 mx-auto">
       {/* Search */}

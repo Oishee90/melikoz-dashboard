@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { FaSearch } from "react-icons/fa";
-
+import { FaUserAlt } from "react-icons/fa";
 // Fake Data
 const fakeUsers = [
   {

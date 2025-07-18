@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { MdOutlineDashboard } from "react-icons/md";
 import { HiOutlineShieldCheck } from "react-icons/hi";
 import { MdOutlinePayments } from "react-icons/md";
-import logo from "../../../assets/dashboard-logo.png";
+import logo from "../../../assets/melikozlogo.png";
 import { CiLogin } from "react-icons/ci";
 import { IoMdSettings } from "react-icons/io";
 const AdminSidebar = () => {
