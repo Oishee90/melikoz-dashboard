@@ -94,7 +94,7 @@ const AI = () => {
                 <td className="px-4 py-4">{item.id}</td>
                 <td className="px-4 py-4">{item.date}</td>
                 <td className="px-4 py-4">{item.type}</td>
-                <td className="px-4 py-4">{item.urgency}</td>
+                <td className="px-4 py-4 text-[#F8322F]">{item.urgency}</td>
                 <td className="px-4 py-4">{item.summary}</td>
               </tr>
             ))}

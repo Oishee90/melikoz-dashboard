@@ -75,7 +75,45 @@ const Payment = () => {
           <option value="oldest">Sort by: Oldest First</option>
         </select>
       </div>
+      {/* Top Cards */}
+      <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-3">
+        {/* Total Jobs */}
+        <div className="flex items-center justify-between px-6 p-4 text-white rounded-2xl  shadow bg-[#F98587]">
+          <div className="flex flex-col items-start ">
+            <p className="text-white roboto font-semibold text-[30px]">
+              Refunds Overview
+            </p>
+            <p className="text-lg font-medium text-white roboto">12</p>
+            <p className="text-base font-medium text-white roboto">
+              Refund requests in the last 30 days
+            </p>
+          </div>
+        </div>
 
+        {/* Active Users */}
+        <div className="flex items-center justify-between px-6 p-4 text-white rounded-2xl  shadow bg-[#10B981]">
+          <div className="flex flex-col items-start ">
+            <p className="text-white roboto font-semibold text-[30px]">
+              Active Disputes
+            </p>
+            <p className="text-lg font-medium text-white roboto">3</p>
+            <p className="text-base font-medium text-white roboto">
+              Ongoing dispute cases
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center justify-between px-6 p-4 text-white rounded-2xl  shadow bg-[#0097EE]">
+          <div className="flex flex-col items-start ">
+            <p className="text-white roboto font-semibold text-[30px]">
+              Successful Payments
+            </p>
+            <p className="text-lg font-medium text-white roboto">1,256</p>
+            <p className="text-base font-semibold text-white roboto">
+              Payments completed last month
+            </p>
+          </div>
+        </div>
+      </div>
       {/* Table */}
       <div className="overflow-x-auto bg-white rounded-lg shadow border border-[#C1C1C1]">
         <table className="min-w-full table-auto roboto">
@@ -99,7 +137,22 @@ const Payment = () => {
                 <td className="px-4 py-4">{item.date}</td>
                 <td className="px-4 py-4">{item.user}</td>
                 <td className="px-4 py-4">${item.amount.toFixed(2)}</td>
-                <td className="px-4 py-4">{item.status}</td>
+                <td className="px-4 py-4">
+                  <span
+                    className="px-3 py-1 text-sm font-semibold text-white rounded-full"
+                    style={{
+                      backgroundColor:
+                        item.status === "Completed"
+                          ? "#6EEFC5"
+                          : item.status === "Pending"
+                          ? "#EECA00"
+                          : "#F8322F",
+                      color: item.status === "Pending" ? "#fff" : "#fff",
+                    }}
+                  >
+                    {item.status}
+                  </span>
+                </td>
                 <td className="px-4 py-4">{item.method}</td>
               </tr>
             ))}
