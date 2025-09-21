@@ -1,64 +1,17 @@
 import React, { useState } from "react";
 
 import { FaSearch } from "react-icons/fa";
+import { useGetServiceQuery } from "../../../Redux/feature/auth/authapi";
 
 // Updated Service Data
-const fakeServices = [
-  {
-    id: "SVC001",
-    type: "Conveyancing",
-    client: "Michael Ross",
-    provider: "Sophia Ahmed",
-    status: "Completed",
-    location: "Sydney, NSW",
-    requested: "2025-07-01",
-  },
-  {
-    id: "SVC002",
-    type: "Title Review",
-    client: "Emily Brown",
-    provider: "Linda Zhang",
-    status: "In Progress",
-    location: "Melbourne, VIC",
-    requested: "2025-07-05",
-  },
-  {
-    id: "SVC003",
-    type: "Contract Review",
-    client: "Nora Ali",
-    provider: "Shohag Islam",
-    status: "Pending",
-    location: "Brisbane, QLD",
-    requested: "2025-07-10",
-  },
-  {
-    id: "SVC004",
-    type: "Legal Advice",
-    client: "Ariana Gomez",
-    provider: "Khan Rafi",
-    status: "Completed",
-    location: "Perth, WA",
-    requested: "2025-07-03",
-  },
-  {
-    id: "SVC005",
-    type: "Pre-Purchase Report",
-    client: "Linda Zhang",
-    provider: "Mizanur Rahman",
-    status: "In Progress",
-    location: "Adelaide, SA",
-    requested: "2025-07-12",
-  },
-];
 
 const Services = () => {
-  const [services, setServices] = useState(fakeServices);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const servicesPerPage = 4;
-
+  const servicesPerPage = 6;
+  const { data: services = [] } = useGetServiceQuery();
   const filteredServices = services.filter((s) =>
-    s.id.toLowerCase().includes(searchTerm.toLowerCase())
+    s?.id?.toString().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLast = currentPage * servicesPerPage;
@@ -103,16 +56,16 @@ const Services = () => {
                 key={service.id}
                 className="text-lg font-normal border-b hover:bg-gray-50"
               >
-                <td className="px-4 py-4">{service.id}</td>
-                <td className="px-4 py-4">{service.type}</td>
-                <td className="px-4 py-4">{service.client}</td>
-                <td className="px-4 py-4">{service.provider}</td>
+                <td className="px-4 py-4">{service.id || "N/A"}</td>
+                <td className="px-4 py-4">{service.booking_type || "N/A"}</td>
+                <td className="px-4 py-4">{service.client || "N/A"}</td>
+                <td className="px-4 py-4">{service.provider || "N/A"}</td>
                 <td className="px-4 py-4">
                   <span
                     className={`px-2 py-1 rounded-lg text-white text-base ${
-                      service.status === "Completed"
+                      service.status === "completed"
                         ? "bg-green-500"
-                        : service.status === "In Progress"
+                        : service.status === "active"
                         ? "bg-blue-500"
                         : "bg-yellow-500"
                     }`}
@@ -120,8 +73,8 @@ const Services = () => {
                     {service.status}
                   </span>
                 </td>
-                <td className="px-4 py-4">{service.location}</td>
-                <td className="px-4 py-4">{service.requested}</td>
+                <td className="px-4 py-4">{service.address || "N/A"}</td>
+                <td className="px-4 py-4">{service.date || "N/A"}</td>
               </tr>
             ))}
             {currentServices.length === 0 && (

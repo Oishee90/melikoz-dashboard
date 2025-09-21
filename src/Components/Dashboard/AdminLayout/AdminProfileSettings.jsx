@@ -1,99 +1,131 @@
 import React, { useState } from "react";
 import { FaUser } from "react-icons/fa";
-import Swal from "sweetalert2";
-const AdminProfileSettings = () => {
-  const [image, setImage] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
+import { toast } from "react-toastify";
+import { useUpdateAdminProfileMutation } from "../../../Redux/feature/auth/authapi";
+
+const AdminProfileSettings = () => {
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [updateProfile, { isLoading }] = useUpdateAdminProfileMutation();
+
+  // Formik setup
+  // initialValues
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      phone: "",
+      profile: null, // backend expects 'profile'
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Full Name is required"),
+      phone: Yup.string().required("Phone Number is required"),
+    }),
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const formData = new FormData();
+        formData.append("name", values.name);
+        formData.append("phone", values.phone);
+        if (values.profile) {
+          formData.append("profile", values.profile); // match backend
+        }
+
+        await updateProfile(formData).unwrap();
+
+        toast.success("Profile Updated Successfully 🎉");
+        resetForm();
+        setPreviewUrl(null);
+      } catch (error) {
+        toast.error("Failed to update profile ❌");
+      }
+    },
+  });
+
+  // Image handlers
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(file);
+      formik.setFieldValue("profile", file); // <-- use 'profile'
       setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
   const removeImage = () => {
-    setImage(null);
+    formik.setFieldValue("profile", null); // <-- use 'profile'
     setPreviewUrl(null);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Simulate a successful save
-    Swal.fire({
-      icon: "success",
-      title: "Profile Updated",
-      text: "Your profile information has been successfully saved!",
-      confirmButtonColor: "#4F46E5", // Indigo
-    });
-
-    // You can also reset state or send to API here
-  };
+  // Handle image preview
 
   return (
-    <div className="container mx-auto bg-white ">
+    <div className="container mx-auto bg-white">
       <h2 className="mb-4 text-[36px] font-bold roboto">
         Admin Profile Settings
       </h2>
 
       <form
-        onSubmit={handleSubmit}
-        className="border border-[#C1C1C1] rounded-lg p-8 w-1/2
-      "
+        onSubmit={formik.handleSubmit}
+        className="border border-[#C1C1C1] rounded-lg p-8 w-1/2"
       >
+        {/* Section Title */}
         <div className="flex items-center gap-2 mb-4 font-bold text-[#303030] roboto text-[24px]">
-          <span>
-            <FaUser />
-          </span>{" "}
-          Personal Information
+          <FaUser /> Personal Information
         </div>
 
+        {/* Full Name */}
         <div className="mb-4">
           <label className="block mb-1 text-lg text-[#303030] font-bold">
             Full Name
           </label>
           <input
             type="text"
+            name="name"
             placeholder="Admin Name"
-            className="w-full px-3 py-2 border  border-[#777777] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className="w-full px-3 py-2 border border-[#777777] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
+          {formik.touched.name && formik.errors.name && (
+            <p className="text-sm text-red-500">{formik.errors.name}</p>
+          )}
         </div>
 
+        {/* Email (read-only) */}
         <div className="mb-4">
           <label className="block mb-1 text-lg text-[#303030] font-bold">
             Email Address
           </label>
           <input
             type="email"
-            placeholder="admin@gmail.com"
-            className="w-full px-3 py-2 border bg-[#c7c2c2] placeholder:text-white  border-[#777777] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            value="admin@gmail.com"
+            className="w-full px-3 py-2 border bg-[#c7c2c2] placeholder:text-white border-[#777777] rounded-md"
             disabled
           />
         </div>
 
+        {/* Phone */}
         <div className="mb-4">
           <label className="block mb-1 text-lg text-[#303030] font-bold">
             Phone Number
           </label>
           <input
             type="text"
+            name="phone"
             placeholder="+880xxxxxxxxxx"
-            className="w-full px-3 py-2 border   border-[#777777] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            value={formik.values.phone}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className="w-full px-3 py-2 border border-[#777777] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
+          {formik.touched.phone && formik.errors.phone && (
+            <p className="text-sm text-red-500">{formik.errors.phone}</p>
+          )}
         </div>
 
-        <div className="mb-4">
-          <label className="block mb-1 text-lg text-[#303030] font-bold">
-            Language
-          </label>
-          <select className="w-full px-3 py-2 border   border-[#777777] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400">
-            <option>English</option>
-            <option>Spanish</option>
-          </select>
-        </div>
-
+        {/* Profile Picture */}
         <div className="mb-4">
           <label className="block mb-1 text-lg text-[#303030] font-bold">
             Profile Photo
@@ -102,7 +134,7 @@ const AdminProfileSettings = () => {
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="block w-full text-sm  border  rounded-lg border-[#777777]   text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:text-white  file:bg-[#1290D9] hover:file:bg-indigo-100"
+            className="block w-full text-sm border rounded-lg border-[#777777] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:text-white file:bg-[#1290D9] hover:file:bg-indigo-100"
           />
 
           {previewUrl && (
@@ -123,11 +155,13 @@ const AdminProfileSettings = () => {
           )}
         </div>
 
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full py-2 mt-4 text-lg font-semibold text-white bg-indigo-800 rounded-md hover:bg-indigo-900"
+          disabled={isLoading}
+          className="w-full py-2 mt-4 text-lg font-semibold text-white bg-indigo-800 rounded-md hover:bg-indigo-900 disabled:opacity-50"
         >
-          Save
+          {isLoading ? "Saving..." : "Save"}
         </button>
       </form>
     </div>

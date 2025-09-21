@@ -14,6 +14,8 @@ import AdminProfileSettings from "./Components/Dashboard/AdminLayout/AdminProfil
 import AI from "./Components/Dashboard/AdminLayout/AI";
 import Payment from "./Components/Dashboard/AdminLayout/Payment";
 import SystemLog from "./Components/Dashboard/AdminLayout/SystemLog";
+import { Provider } from "react-redux";
+import { store } from "./Redux/store";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +65,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+        <Provider store={store}>
     <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );

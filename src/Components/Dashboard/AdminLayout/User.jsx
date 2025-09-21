@@ -3,89 +3,28 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { FaSearch } from "react-icons/fa";
 import { FaUserAlt } from "react-icons/fa";
-// Fake Data
-const fakeUsers = [
-  {
-    id: 1,
-    name: "Sophia Ahmed",
-    email: "sophia@example.com",
-    role: "Provider",
-    status: "Verified",
-  },
-  {
-    id: 2,
-    name: "Michael Ross",
-    email: "michael@example.com",
-    role: "Client",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    name: "Linda Zhang",
-    email: "linda@example.com",
-    role: "Provider",
-    status: "Verified",
-  },
-  {
-    id: 4,
-    name: "Shohag Islam",
-    email: "shohag@example.com",
-    role: "Provider",
-    status: "Verified",
-  },
-  {
-    id: 5,
-    name: "Ariana Gomez",
-    email: "ariana@example.com",
-    role: "Client",
-    status: "Pending",
-  },
-  {
-    id: 6,
-    name: "Khan Rafi",
-    email: "rafi@example.com",
-    role: "Provider",
-    status: "Verified",
-  },
-  {
-    id: 7,
-    name: "Emily Brown",
-    email: "emily@example.com",
-    role: "Client",
-    status: "Verified",
-  },
-  {
-    id: 8,
-    name: "Mizanur Rahman",
-    email: "mizan@example.com",
-    role: "Provider",
-    status: "Pending",
-  },
-  {
-    id: 9,
-    name: "Nora Ali",
-    email: "nora@example.com",
-    role: "Client",
-    status: "Verified",
-  },
-];
+import {
+  useDeleteUserMutation,
+  useGetUserQuery,
+} from "../../../Redux/feature/auth/authapi";
+import { u } from "framer-motion/client";
 
 const User = () => {
-  const [users, setUsers] = useState(fakeUsers);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 4;
-
+  const usersPerPage = 6;
+  const { data: users = [], refetch } = useGetUserQuery();
+  const [deleteUser] = useDeleteUserMutation();
   // Filtered & Paginated Users
   const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    user?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const indexOfLast = currentPage * usersPerPage;
   const indexOfFirst = indexOfLast - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "This user will be deleted!",
@@ -94,10 +33,22 @@ const User = () => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setUsers(users.filter((user) => user.id !== id));
-        Swal.fire("Deleted!", "User has been removed.", "success");
+        try {
+          await deleteUser(id).unwrap();
+
+          refetch();
+          Swal.fire({
+            title: "Deleted!",
+            text: "User has been removed",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }
     });
   };
@@ -141,7 +92,7 @@ const User = () => {
                 <td className="px-4 py-4">{user.email}</td>
                 <td className="px-4 py-4">{user.role}</td>
                 <td className="px-4 py-4">
-                  {user.status === "Verified" ? (
+                  {user.is_verified === true ? (
                     <span className="px-2 py-1 cursor-pointer text-base bg-[#6EEFC5] text-white rounded-lg text-bas">
                       Verified
                     </span>

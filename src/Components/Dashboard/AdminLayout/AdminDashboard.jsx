@@ -9,15 +9,27 @@ import {
   Line,
 } from "recharts";
 import { FaSuitcase, FaUserAlt, FaChartLine } from "react-icons/fa";
+import {
+  useGetChartQuery,
+  useGetDashboardQuery,
+} from "../../../Redux/feature/auth/authapi";
 
-const data = [
-  { month: "Jan", jobs: 100 },
-  { month: "Feb", jobs: 180 },
-  { month: "Mar", jobs: 150 },
-  { month: "May", jobs: 220 },
-  { month: "Jun", jobs: 310 },
-];
 const AdminDashboard = () => {
+  const { data: dashboardData } = useGetDashboardQuery();
+  const { data: chart = [] } = useGetChartQuery();
+
+  // ✅ Map API data -> keep raw month & convert for display
+  const data = chart.map((item) => {
+    const [year, month] = item.month.split("-");
+    const date = new Date(year, month - 1); // month is 0-indexed
+    const shortMonth = date.toLocaleString("default", { month: "short" }); // Jan, Feb etc.
+    return {
+      month: item.month, // raw (2025-07)
+      shortMonth,        // formatted (Jul)
+      jobs: item.count,
+    };
+  });
+
   return (
     <div className="container p-6 mx-auto roboto">
       <h2 className="mb-4 text-[36px] font-bold">Dashboard Overview</h2>
@@ -25,7 +37,7 @@ const AdminDashboard = () => {
       {/* Top Cards */}
       <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-3">
         {/* Total Jobs */}
-        <div className="flex items-center justify-between p-8 text-white rounded-2xl  shadow bg-[#F98587]">
+        <div className="flex items-center justify-between p-8 text-white rounded-2xl shadow bg-[#F98587]">
           <div className="flex items-center gap-3">
             <div className="p-6 bg-white rounded-full text-[#F98587]">
               <FaSuitcase className="text-xl" />
@@ -35,14 +47,14 @@ const AdminDashboard = () => {
                 Total Jobs
               </p>
               <p className="text-lg font-medium text-white roboto">
-                1,245 Jobs Completed
+                {dashboardData?.total_completed_jobs} Jobs Completed
               </p>
             </div>
           </div>
         </div>
 
         {/* Active Users */}
-        <div className="flex items-center justify-between p-8 text-white rounded-2xl  shadow bg-[#10B981]">
+        <div className="flex items-center justify-between p-8 text-white rounded-2xl shadow bg-[#10B981]">
           <div className="flex items-center gap-3">
             <div className="p-6 bg-white rounded-full text-[#10B981]">
               <FaUserAlt className="text-xl" />
@@ -52,14 +64,14 @@ const AdminDashboard = () => {
                 Active Users
               </p>
               <p className="text-lg font-medium text-white roboto">
-                563 Providers Online
+                {dashboardData?.active_providers} Providers Online
               </p>
             </div>
           </div>
         </div>
 
         {/* Performance */}
-        <div className="flex items-center justify-between p-8 text-white rounded-2xl  shadow bg-[#0097EE]">
+        <div className="flex items-center justify-between p-8 text-white rounded-2xl shadow bg-[#0097EE]">
           <div className="flex items-center gap-3">
             <div className="p-6 bg-white rounded-full text-[#0097EE]">
               <FaChartLine className="text-xl" />
@@ -69,7 +81,7 @@ const AdminDashboard = () => {
                 Performance
               </p>
               <p className="text-lg font-medium text-white roboto">
-                🔵 92% Positive Feedback
+                🔵 {dashboardData?.positive_feedback_responses} Positive Feedback
               </p>
             </div>
           </div>
@@ -97,9 +109,21 @@ const AdminDashboard = () => {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
+
+            {/* ✅ Show short month on X-axis */}
+            <XAxis dataKey="shortMonth" />
+
             <YAxis />
-            <Tooltip />
+            {/* ✅ Tooltip will still show full month */}
+            <Tooltip
+              formatter={(value, name) => [value, "Jobs"]}
+              labelFormatter={(label, payload) => {
+                // find original raw month
+                const item = payload[0]?.payload;
+                return item?.month || label;
+              }}
+            />
+
             <Area
               type="monotone"
               dataKey="jobs"

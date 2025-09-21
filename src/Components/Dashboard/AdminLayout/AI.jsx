@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { FaSearch } from "react-icons/fa";
+import { use } from "react";
+import { useGetAIfeedbackQuery } from "../../../Redux/feature/auth/authapi";
 
 // Updated Feedback Data
 const fakeFeedback = [
@@ -42,13 +44,13 @@ const fakeFeedback = [
 ];
 
 const AI = () => {
-  const [feedback, setFeedback] = useState(fakeFeedback);
+  // const [feedback, setFeedback] = useState(fakeFeedback);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
-
+  const { data: feedback = [] } = useGetAIfeedbackQuery();
   const filteredFeedback = feedback.filter((f) =>
-    f.id.toLowerCase().includes(searchTerm.toLowerCase())
+    f?.id?.toString().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLast = currentPage * itemsPerPage;
@@ -91,11 +93,13 @@ const AI = () => {
                 key={item.id}
                 className="text-lg font-normal border-b hover:bg-gray-50"
               >
-                <td className="px-4 py-4">{item.id}</td>
-                <td className="px-4 py-4">{item.date}</td>
-                <td className="px-4 py-4">{item.type}</td>
-                <td className="px-4 py-4 text-[#F8322F]">{item.urgency}</td>
-                <td className="px-4 py-4">{item.summary}</td>
+                <td className="px-4 py-4">{item.id || "N/A"}</td>
+                <td className="px-4 py-4">{item.date || "N/A"}</td>
+                <td className="px-4 py-4">{item.booking_type || "N/A"}</td>
+                <td className="px-4 py-4 text-[#F8322F]">
+                  {item.urgency || "N/A"}
+                </td>
+                <td className="px-4 py-4">{item.description || "N/A"}</td>
               </tr>
             ))}
             {currentItems.length === 0 && (

@@ -1,57 +1,65 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import "sweetalert2/dist/sweetalert2.min.css";
-import logo from "../../assets/logo.png"; // <-- add your logo path
-
-const VALID_CREDENTIALS = {
-  email: "admin@gmail.com",
-  password: "admin123",
-};
+import { useLoginMutation } from "../../Redux/feature/auth/authapi";
+import { useDispatch } from "react-redux";
+import { userLoggedIn } from "../../Redux/feature/auth/authSlice";
+import logo from "../../assets/logo.png";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { p } from "framer-motion/client";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [pw, setPw] = useState("");
+  const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [login] = useLoginMutation();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
     setSubmitting(true);
 
-    const ok =
-      email.trim().toLowerCase() === VALID_CREDENTIALS.email &&
-      pw === VALID_CREDENTIALS.password;
+    try {
+      //  send correct field names
+      const response = await login({ email, password }).unwrap();
 
-    if (ok) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "success",
-        title: "Login successful!",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
+      //  Dispatch login action
+      dispatch(
+        userLoggedIn({
+          token: response.access,
+          user: response.user_profile,
+        })
+      );
+
+      //  Persist token & user
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          token: response.access,
+          refresh: response.refresh,
+          user: response.user_profile,
+        })
+      );
+
+      toast.success("Login Successful 🎉", {
+        position: "top-center",
+        autoClose: 2000,
       });
-      // simulate short delay before navigation (lets toast show)
+
       setTimeout(() => {
         navigate("/");
-      }, 800);
-    } else {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        title: "Invalid email or password.",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
+      }, 1000);
+    } catch (err) {
+      toast.error("Invalid email or password ❌", {
+        position: "top-center",
+        autoClose: 3000,
       });
+    } finally {
+      setSubmitting(false);
     }
-
-    setSubmitting(false);
   };
 
   return (
@@ -101,8 +109,8 @@ const Login = () => {
               autoComplete="current-password"
               className="w-full px-3 py-2 mb-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="••••••••••••••"
-              value={pw}
-              onChange={(e) => setPw(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 

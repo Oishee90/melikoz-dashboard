@@ -12,6 +12,9 @@ import { MdOutlinePayments } from "react-icons/md";
 import logo from "../../../assets/melikozlogo.png";
 import { CiLogin } from "react-icons/ci";
 import { IoMdSettings } from "react-icons/io";
+import { userLoggedOut } from "../../../Redux/feature/auth/authSlice";
+import { persistor } from "../../../Redux/store";
+import { useDispatch } from "react-redux";
 const AdminSidebar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSeetingsDropdownOpen, setSeetingsDropdownOpen] = useState(false);
@@ -26,7 +29,7 @@ const AdminSidebar = () => {
   const isActivePayment = location.pathname === "/payment";
   const isActiveSystem = location.pathname === "/system";
   const isActiveSettings = location.pathname === "/settings";
-
+ const dispatch = useDispatch();
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -43,6 +46,10 @@ const AdminSidebar = () => {
     };
   }, []);
   const handleLogout = () => {
+       dispatch(userLoggedOut());
+
+    // Clear persisted store
+    persistor.purge();
     localStorage.removeItem("accessToken"); // Remove token from localStorage
     navigate("/login", { replace: true }); // Redirect to login page
   };
