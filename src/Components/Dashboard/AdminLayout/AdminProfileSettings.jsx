@@ -5,12 +5,16 @@ import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
 import { toast } from "react-toastify";
-import { useUpdateAdminProfileMutation } from "../../../Redux/feature/auth/authapi";
+import {
+  useGetProfileUpdateQuery,
+  useUpdateAdminProfileMutation,
+} from "../../../Redux/feature/auth/authapi";
 
 const AdminProfileSettings = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [updateProfile, { isLoading }] = useUpdateAdminProfileMutation();
-
+  const { data: userProfile, refetch } = useGetProfileUpdateQuery();
+  console.log(userProfile, "userProfile");
   // Formik setup
   // initialValues
   const formik = useFormik({
@@ -19,20 +23,21 @@ const AdminProfileSettings = () => {
       phone: "",
       profile: null, // backend expects 'profile'
     },
-    validationSchema: Yup.object({
-      name: Yup.string().required("Full Name is required"),
-      phone: Yup.string().required("Phone Number is required"),
-    }),
+    // validationSchema: Yup.object({
+    //   name: Yup.string().required("Full Name is required"),
+    //   phone: Yup.string().required("Phone Number is required"),
+    // }),
     onSubmit: async (values, { resetForm }) => {
       try {
         const formData = new FormData();
         formData.append("name", values.name);
         formData.append("phone", values.phone);
         if (values.profile) {
-          formData.append("profile", values.profile); // match backend
+          formData.append("profile_picture", values.profile); // match backend
         }
 
         await updateProfile(formData).unwrap();
+        refetch();
 
         toast.success("Profile Updated Successfully 🎉");
         resetForm();
@@ -82,7 +87,7 @@ const AdminProfileSettings = () => {
           <input
             type="text"
             name="name"
-            placeholder="Admin Name"
+            placeholder={userProfile?.name}
             value={formik.values.name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -114,7 +119,7 @@ const AdminProfileSettings = () => {
           <input
             type="text"
             name="phone"
-            placeholder="+880xxxxxxxxxx"
+            placeholder={userProfile?.phone}
             value={formik.values.phone}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

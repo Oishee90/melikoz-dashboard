@@ -1,7 +1,10 @@
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { NavLink } from "react-router-dom";
+import { useGetProfileUpdateQuery } from "../../Redux/feature/auth/authapi";
+import { use } from "react";
 
 const Header = () => {
+  const { data: userProfile, refetch } = useGetProfileUpdateQuery();
   return (
     <div className="flex items-center justify-between py-6 bg-white dark:bg-[#374151] text-[#020202] dark:text-white px-10 roboto">
       {/* Profile Section */}
@@ -18,9 +21,9 @@ const Header = () => {
       <div className="flex items-center gap-4">
         <button className="p-2 rounded-full ">
           <img
-            src="https://res.cloudinary.com/dwycwft99/image/upload/v1746606936/Profile_Image_Placeholder_2_1_znuysa.png"
+            src={userProfile?.profile?.profile_picture}
             alt="Feedback Icon"
-            className="h-12 w-14"
+            className="h-14 w-14"
           />
         </button>
       </div>

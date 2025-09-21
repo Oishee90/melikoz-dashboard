@@ -84,6 +84,13 @@ export const authapi = apiSlice.injectEndpoints({
         body: formData,
       }),
     }),
+    // getProfile
+     getProfileUpdate: builder.query({
+      query: () => ({
+        url: "dashboard/admin/profile/",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -95,5 +102,6 @@ export const {
   useDeleteUserMutation,
   useGetServiceQuery,
   useGetAIfeedbackQuery,
-  useUpdateAdminProfileMutation
+  useUpdateAdminProfileMutation,
+  useGetProfileUpdateQuery    
 } = authapi;
