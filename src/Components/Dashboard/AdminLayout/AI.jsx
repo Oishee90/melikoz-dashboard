@@ -83,7 +83,7 @@ const AI = () => {
               <th className="px-4 py-4">Feedback ID</th>
               <th className="px-4 py-4">Date</th>
               <th className="px-4 py-4">Type</th>
-              <th className="px-4 py-4">Urgency Score</th>
+              {/* <th className="px-4 py-4">Urgency Score</th> */}
               <th className="px-4 py-4">Summary</th>
             </tr>
           </thead>
@@ -96,9 +96,9 @@ const AI = () => {
                 <td className="px-4 py-4">{item.id || "N/A"}</td>
                 <td className="px-4 py-4">{item.date || "N/A"}</td>
                 <td className="px-4 py-4">{item.booking_type || "N/A"}</td>
-                <td className="px-4 py-4 text-[#F8322F]">
+                {/* <td className="px-4 py-4 text-[#F8322F]">
                   {item.urgency || "N/A"}
-                </td>
+                </td> */}
                 <td className="px-4 py-4">{item.description || "N/A"}</td>
               </tr>
             ))}

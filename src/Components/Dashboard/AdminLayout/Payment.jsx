@@ -1,65 +1,34 @@
-import React, { useState } from "react";
-
-// Payment Data
-const fakePayments = [
-  {
-    transactionId: "TXN1001",
-    date: "2025-07-12",
-    user: "Alice Johnson",
-    amount: 250.75,
-    status: "Completed",
-    method: "Credit Card",
-  },
-  {
-    transactionId: "TXN1002",
-    date: "2025-07-10",
-    user: "Bob Smith",
-    amount: 120.0,
-    status: "Pending",
-    method: "Bank Transfer",
-  },
-  {
-    transactionId: "TXN1003",
-    date: "2025-07-08",
-    user: "Carol Lee",
-    amount: 89.99,
-    status: "Failed",
-    method: "PayPal",
-  },
-  {
-    transactionId: "TXN1004",
-    date: "2025-07-05",
-    user: "David Kim",
-    amount: 310.5,
-    status: "Completed",
-    method: "Credit Card",
-  },
-  {
-    transactionId: "TXN1005",
-    date: "2025-07-02",
-    user: "Eve Turner",
-    amount: 150.0,
-    status: "Completed",
-    method: "Bank Transfer",
-  },
-];
+import React, { useState, useMemo } from "react";
+import PaymentPlan from "./Payment/PaymentPlan";
+import ProvidersAwaitingPayout from "./Payment/ProvidersAwaitingPayout";
+import { useGetCTransictionQuery } from "../../../Redux/feature/auth/authapi";
 
 const Payment = () => {
-  const [payments, setPayments] = useState(fakePayments);
   const [sortOrder, setSortOrder] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
 
-  const sortedPayments = [...payments].sort((a, b) => {
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
-    return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
-  });
+  // RTK Query API call
+  const { data: transactions, isLoading, isError } = useGetCTransictionQuery();
 
+  // Sorting by created_at
+  const sortedPayments = useMemo(() => {
+    if (!transactions) return [];
+    return [...transactions].sort((a, b) => {
+      const dateA = new Date(a.created_at);
+      const dateB = new Date(b.created_at);
+      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+    });
+  }, [transactions, sortOrder]);
+
+  // Pagination
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentItems = sortedPayments.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(sortedPayments.length / itemsPerPage);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error fetching transactions!</p>;
 
   return (
     <div className="container p-6 mx-auto">
@@ -75,45 +44,7 @@ const Payment = () => {
           <option value="oldest">Sort by: Oldest First</option>
         </select>
       </div>
-      {/* Top Cards */}
-      <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-3">
-        {/* Total Jobs */}
-        <div className="flex items-center justify-between px-6 p-4 text-white rounded-2xl  shadow bg-[#F98587]">
-          <div className="flex flex-col items-start ">
-            <p className="text-white roboto font-semibold text-[30px]">
-              Refunds Overview
-            </p>
-            <p className="text-lg font-medium text-white roboto">12</p>
-            <p className="text-base font-medium text-white roboto">
-              Refund requests in the last 30 days
-            </p>
-          </div>
-        </div>
 
-        {/* Active Users */}
-        <div className="flex items-center justify-between px-6 p-4 text-white rounded-2xl  shadow bg-[#10B981]">
-          <div className="flex flex-col items-start ">
-            <p className="text-white roboto font-semibold text-[30px]">
-              Active Disputes
-            </p>
-            <p className="text-lg font-medium text-white roboto">3</p>
-            <p className="text-base font-medium text-white roboto">
-              Ongoing dispute cases
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center justify-between px-6 p-4 text-white rounded-2xl  shadow bg-[#0097EE]">
-          <div className="flex flex-col items-start ">
-            <p className="text-white roboto font-semibold text-[30px]">
-              Successful Payments
-            </p>
-            <p className="text-lg font-medium text-white roboto">1,256</p>
-            <p className="text-base font-semibold text-white roboto">
-              Payments completed last month
-            </p>
-          </div>
-        </div>
-      </div>
       {/* Table */}
       <div className="overflow-x-auto bg-white rounded-lg shadow border border-[#C1C1C1]">
         <table className="min-w-full table-auto roboto">
@@ -121,44 +52,48 @@ const Payment = () => {
             <tr className="text-left font-medium text-xl text-[#303030] border-b border-b-[#C1C1C1]">
               <th className="px-4 py-4">Transaction ID</th>
               <th className="px-4 py-4">Date</th>
-              <th className="px-4 py-4">User</th>
+              <th className="px-4 py-4">User </th>
               <th className="px-4 py-4">Amount ($)</th>
               <th className="px-4 py-4">Status</th>
-              <th className="px-4 py-4">Payment Method</th>
+              <th className="px-4 py-4">Transaction Type</th>
             </tr>
           </thead>
           <tbody>
             {currentItems.map((item) => (
               <tr
-                key={item.transactionId}
+                key={item.id}
                 className="text-lg font-normal border-b hover:bg-gray-50"
               >
-                <td className="px-4 py-4">{item.transactionId}</td>
-                <td className="px-4 py-4">{item.date}</td>
-                <td className="px-4 py-4">{item.user}</td>
-                <td className="px-4 py-4">${item.amount.toFixed(2)}</td>
+                <td className="px-4 py-4">{item.id}</td>
+                <td className="px-4 py-4">
+                  {new Date(item.created_at).toLocaleDateString()}
+                </td>
+                <td className="px-4 py-4">{item.user_name}</td>
+                <td className="px-4 py-4">
+                  ${parseFloat(item.amount).toFixed(2)}
+                </td>
                 <td className="px-4 py-4">
                   <span
                     className="px-3 py-1 text-sm font-semibold text-white rounded-full"
                     style={{
                       backgroundColor:
-                        item.status === "Completed"
+                        item.status.toLowerCase() === "completed"
                           ? "#6EEFC5"
-                          : item.status === "Pending"
+                          : item.status.toLowerCase() === "pending"
                           ? "#EECA00"
                           : "#F8322F",
-                      color: item.status === "Pending" ? "#fff" : "#fff",
+                      color: "#fff",
                     }}
                   >
-                    {item.status}
+                    {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
                   </span>
                 </td>
-                <td className="px-4 py-4">{item.method}</td>
+                <td className="px-4 py-4">{item.transaction_type}</td>
               </tr>
             ))}
             {currentItems.length === 0 && (
               <tr>
-                <td colSpan="7" className="py-4 text-center text-gray-400">
+                <td colSpan="6" className="py-4 text-center text-gray-400">
                   No payment records found.
                 </td>
               </tr>
@@ -183,6 +118,10 @@ const Payment = () => {
           </button>
         ))}
       </div>
+
+      {/* Extra Sections */}
+      <PaymentPlan />
+      <ProvidersAwaitingPayout />
     </div>
   );
 };

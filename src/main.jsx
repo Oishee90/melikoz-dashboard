@@ -16,6 +16,9 @@ import Payment from "./Components/Dashboard/AdminLayout/Payment";
 import SystemLog from "./Components/Dashboard/AdminLayout/SystemLog";
 import { Provider } from "react-redux";
 import { store } from "./Redux/store";
+import ChatbotContent from "./Components/Dashboard/AdminLayout/Chatbot/ChatbotContent";
+
+import MembershipCards from "./Components/Dashboard/AdminLayout/MembershipPlans";
 
 const router = createBrowserRouter([
   {
@@ -56,8 +59,12 @@ const router = createBrowserRouter([
         element: <Payment></Payment>,
       },
       {
+        path: "/membership",
+        element: <MembershipCards></MembershipCards>,
+      },
+      {
         path: "/system",
-        element: <SystemLog></SystemLog>,
+        element: <ChatbotContent></ChatbotContent>,
       },
     ],
   },
@@ -65,8 +72,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-        <Provider store={store}>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
     </Provider>
   </React.StrictMode>
 );

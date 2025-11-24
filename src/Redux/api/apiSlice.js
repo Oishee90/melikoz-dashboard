@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://10.10.13.21:5500/",
+  baseUrl: "http://10.10.13.74:7002/",
   prepareHeaders: (headers, { getState }) => {
     // Try to get token from Redux state
     const token = getState().auth?.accessToken || null;
@@ -22,9 +22,6 @@ const baseQuery = fetchBaseQuery({
 export const apiSlice = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQuery,
-  tagTypes: [
-    "user",
-    
-  ],
+  tagTypes: ["user"],
   endpoints: () => ({}),
 });

@@ -9,12 +9,14 @@ import { useEffect, useRef, useState } from "react";
 import { MdOutlineDashboard } from "react-icons/md";
 import { HiOutlineShieldCheck } from "react-icons/hi";
 import { MdOutlinePayments } from "react-icons/md";
+import { MdOutlineMessage } from "react-icons/md";
 import logo from "../../../assets/melikozlogo.png";
 import { CiLogin } from "react-icons/ci";
 import { IoMdSettings } from "react-icons/io";
 import { userLoggedOut } from "../../../Redux/feature/auth/authSlice";
 import { persistor } from "../../../Redux/store";
 import { useDispatch } from "react-redux";
+import { FaChessQueen } from "react-icons/fa6";
 const AdminSidebar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSeetingsDropdownOpen, setSeetingsDropdownOpen] = useState(false);
@@ -28,8 +30,9 @@ const AdminSidebar = () => {
   const isActiveAI = location.pathname === "/aioversight";
   const isActivePayment = location.pathname === "/payment";
   const isActiveSystem = location.pathname === "/system";
+  const isActiveMembership = location.pathname === "/membership";
   const isActiveSettings = location.pathname === "/settings";
- const dispatch = useDispatch();
+  const dispatch = useDispatch();
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -46,7 +49,7 @@ const AdminSidebar = () => {
     };
   }, []);
   const handleLogout = () => {
-       dispatch(userLoggedOut());
+    dispatch(userLoggedOut());
 
     // Clear persisted store
     persistor.purge();
@@ -150,6 +153,29 @@ const AdminSidebar = () => {
             </div>
           </NavLink>
           <NavLink
+            to="system"
+            className="flex items-center justify-between w-[280px]"
+          >
+            <div className="flex items-center justify-between w-[280px] font-semibold  p-2 pt-15">
+              {/* Left Indicator Bar */}
+
+              {/* Main Button Area */}
+              <div
+                className={`flex items-center space-x-2 justify-start gap-2 w-[250px] h-[50px]  p-5 text-center
+                  ${
+                    isActiveSystem
+                      ? "bg-[#312E81] text-white rounded-xl"
+                      : "text-white"
+                  }`}
+              >
+                <MdOutlineMessage className="w-[18px] h-[18px] font-semibold   " />{" "}
+                <h1 className="text-base font-semibold poppins">
+                  Chatbot Content
+                </h1>
+              </div>
+            </div>
+          </NavLink>
+          <NavLink
             to="payment"
             className="flex items-center justify-between w-[280px]"
           >
@@ -171,7 +197,7 @@ const AdminSidebar = () => {
             </div>
           </NavLink>
           <NavLink
-            to="system"
+            to="membership"
             className="flex items-center justify-between w-[280px]"
           >
             <div className="flex items-center justify-between w-[280px] font-semibold  p-2 pt-15">
@@ -181,13 +207,13 @@ const AdminSidebar = () => {
               <div
                 className={`flex items-center space-x-2 justify-start gap-2 w-[250px] h-[50px]  p-5 text-center
                   ${
-                    isActiveSystem
+                    isActiveMembership
                       ? "bg-[#312E81] text-white rounded-xl"
                       : "text-white"
                   }`}
               >
-                <CiLogin className="w-[18px] h-[18px] font-semibold   " />{" "}
-                <h1 className="text-base font-semibold poppins">System</h1>
+                <FaChessQueen className="w-[18px] h-[18px] font-semibold   " />{" "}
+                <h1 className="text-base font-semibold poppins">Membership</h1>
               </div>
             </div>
           </NavLink>
