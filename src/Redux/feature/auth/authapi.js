@@ -169,6 +169,14 @@ export const authapi = apiSlice.injectEndpoints({
       query: () => "/transactions/admin/payouts/",
     }),
     // awaiting
+
+    approvePayout: builder.mutation({
+      query: ({ id }) => ({
+        url: `/transactions/admin/payouts/${id}/action/`,
+        method: "POST",
+        body: { action: "approved" },
+      }),
+    }),
   }),
 });
 
@@ -198,5 +206,7 @@ export const {
   // transiction
   useGetCTransictionQuery,
   useGetAwaittingQuery,
-  useGetPayoutQuery
+  useGetPayoutQuery,
+  // approved
+  useApprovePayoutMutation,
 } = authapi;

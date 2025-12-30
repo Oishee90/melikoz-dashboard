@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-
 import { toast } from "react-toastify";
 import {
   useGetProfileUpdateQuery,
@@ -12,28 +9,28 @@ import {
 
 const AdminProfileSettings = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [updateProfile, { isLoading }] = useUpdateAdminProfileMutation();
+
   const { data: userProfile, refetch } = useGetProfileUpdateQuery();
-  console.log(userProfile, "userProfile");
-  // Formik setup
-  // initialValues
+  const [updateProfile, { isLoading }] = useUpdateAdminProfileMutation();
+
   const formik = useFormik({
+    enableReinitialize: true, // ⭐ important
     initialValues: {
-      name: "",
-      phone: "",
-      profile: null, // backend expects 'profile'
+      name: userProfile?.name || "",
+      phone: userProfile?.phone || "",
+      profile: null,
     },
-    // validationSchema: Yup.object({
-    //   name: Yup.string().required("Full Name is required"),
-    //   phone: Yup.string().required("Phone Number is required"),
-    // }),
+
     onSubmit: async (values, { resetForm }) => {
       try {
         const formData = new FormData();
+
+        // unchanged হলেও existing data যাবে
         formData.append("name", values.name);
         formData.append("phone", values.phone);
+
         if (values.profile) {
-          formData.append("profile_picture", values.profile); // match backend
+          formData.append("profile_picture", values.profile);
         }
 
         await updateProfile(formData).unwrap();
@@ -52,17 +49,15 @@ const AdminProfileSettings = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      formik.setFieldValue("profile", file); // <-- use 'profile'
+      formik.setFieldValue("profile", file);
       setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
   const removeImage = () => {
-    formik.setFieldValue("profile", null); // <-- use 'profile'
+    formik.setFieldValue("profile", null);
     setPreviewUrl(null);
   };
-
-  // Handle image preview
 
   return (
     <div className="container mx-auto bg-white">
@@ -81,69 +76,69 @@ const AdminProfileSettings = () => {
 
         {/* Full Name */}
         <div className="mb-4">
-          <label className="block mb-1 text-lg text-[#303030] font-bold">
+          <label className="block mb-1 text-lg font-bold text-[#303030]">
             Full Name
           </label>
           <input
             type="text"
             name="name"
-            placeholder={userProfile?.name}
             value={formik.values.name}
             onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="w-full px-3 py-2 border border-[#777777] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400"
           />
-          {formik.touched.name && formik.errors.name && (
-            <p className="text-sm text-red-500">{formik.errors.name}</p>
-          )}
         </div>
 
         {/* Email (read-only) */}
         <div className="mb-4">
-          <label className="block mb-1 text-lg text-[#303030] font-bold">
+          <label className="block mb-1 text-lg font-bold text-[#303030]">
             Email Address
           </label>
           <input
             type="email"
-            value="admin@gmail.com"
-            className="w-full px-3 py-2 border bg-[#c7c2c2] placeholder:text-white border-[#777777] rounded-md"
+            value={userProfile?.email || "admin@gmail.com"}
             disabled
+            className="w-full px-3 py-2 bg-gray-300 border rounded-md"
           />
         </div>
 
         {/* Phone */}
         <div className="mb-4">
-          <label className="block mb-1 text-lg text-[#303030] font-bold">
+          <label className="block mb-1 text-lg font-bold text-[#303030]">
             Phone Number
           </label>
           <input
             type="text"
             name="phone"
-            placeholder={userProfile?.phone}
             value={formik.values.phone}
             onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="w-full px-3 py-2 border border-[#777777] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-400"
           />
-          {formik.touched.phone && formik.errors.phone && (
-            <p className="text-sm text-red-500">{formik.errors.phone}</p>
-          )}
         </div>
 
         {/* Profile Picture */}
         <div className="mb-4">
-          <label className="block mb-1 text-lg text-[#303030] font-bold">
+          <label className="block mb-1 text-lg font-bold text-[#303030]">
             Profile Photo
           </label>
           <input
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="block w-full text-sm border rounded-lg border-[#777777] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:text-white file:bg-[#1290D9] hover:file:bg-indigo-100"
+            className="block w-full text-sm border rounded-lg"
           />
 
+          {/* Existing profile image */}
+          {!previewUrl && userProfile?.profile_picture && (
+            <img
+              src={userProfile.profile_picture}
+              alt="Current Profile"
+              className="w-32 mt-4 border rounded"
+            />
+          )}
+
+          {/* Preview image */}
           {previewUrl && (
-            <div className="relative w-48 mt-4">
+            <div className="relative w-32 mt-4">
               <img
                 src={previewUrl}
                 alt="Preview"
@@ -152,7 +147,7 @@ const AdminProfileSettings = () => {
               <button
                 type="button"
                 onClick={removeImage}
-                className="absolute flex items-center justify-center w-6 h-6 font-bold text-white bg-red-600 rounded-full -top-2 -right-2 hover:bg-red-700"
+                className="absolute w-6 h-6 text-white bg-red-600 rounded-full -top-2 -right-2"
               >
                 ×
               </button>

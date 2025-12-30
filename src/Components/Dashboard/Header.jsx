@@ -6,7 +6,7 @@ import { use } from "react";
 const Header = () => {
   const { data: userProfile, refetch } = useGetProfileUpdateQuery();
   return (
-    <div className="flex items-center justify-between py-6 bg-white dark:bg-[#374151] text-[#020202] dark:text-white px-10 roboto">
+    <div className="flex items-center justify-between py-6 bg-white  text-[#020202] px-10 roboto">
       {/* Profile Section */}
 
       {/* Left Side: Title and Welcome Message */}

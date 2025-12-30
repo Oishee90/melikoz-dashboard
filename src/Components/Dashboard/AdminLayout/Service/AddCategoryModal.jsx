@@ -36,7 +36,7 @@ export default function AddCategoryModal({ onClose }) {
         const msg =
           error?.data?.name?.[0] || error?.data?.message || "Invalid input!";
 
-        toast.error(msg); // response থেকে message show
+        toast.error(msg); 
         return;
       }
 

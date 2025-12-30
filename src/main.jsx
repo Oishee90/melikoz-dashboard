@@ -19,52 +19,101 @@ import { store } from "./Redux/store";
 import ChatbotContent from "./Components/Dashboard/AdminLayout/Chatbot/ChatbotContent";
 
 import MembershipCards from "./Components/Dashboard/AdminLayout/MembershipPlans";
+import { PrivateRoute } from "./Components/routes/PrivateRoute";
+import PublicRoute from "./Components/routes/PublicRoute ";
 
 const router = createBrowserRouter([
   {
     path: "/login",
-    element: <Login />,
+    element: (
+      <PublicRoute>
+        {" "}
+        <Login />
+      </PublicRoute>
+    ),
   },
 
   {
     path: "/",
-    element: <Root></Root>,
+    element: (
+      <PrivateRoute>
+        <Root></Root>
+      </PrivateRoute>
+    ),
     children: [
       {
         index: true,
-        element: <AdminDashboard></AdminDashboard>,
+        element: (
+          <PrivateRoute>
+            {" "}
+            <AdminDashboard></AdminDashboard>
+          </PrivateRoute>
+        ),
       },
       {
         path: "/users",
-        element: <User></User>,
+        element: (
+          <PrivateRoute>
+            {" "}
+            <User></User>
+          </PrivateRoute>
+        ),
       },
       {
         path: "/services",
-        element: <Services></Services>,
+        element: (
+          <PrivateRoute>
+            <Services></Services>
+          </PrivateRoute>
+        ),
       },
       {
         path: "/services",
-        element: <Services></Services>,
+        element: (
+          <PrivateRoute>
+            <Services></Services>
+          </PrivateRoute>
+        ),
       },
       {
         path: "/settings",
-        element: <AdminProfileSettings></AdminProfileSettings>,
+        element: (
+          <PrivateRoute>
+            <AdminProfileSettings></AdminProfileSettings>
+          </PrivateRoute>
+        ),
       },
       {
         path: "/aioversight",
-        element: <AI></AI>,
+        element: (
+          <PrivateRoute>
+            <AI></AI>
+          </PrivateRoute>
+        ),
       },
       {
         path: "/payment",
-        element: <Payment></Payment>,
+        element: (
+          <PrivateRoute>
+            <Payment></Payment>
+          </PrivateRoute>
+        ),
       },
       {
         path: "/membership",
-        element: <MembershipCards></MembershipCards>,
+        element: (
+          <PrivateRoute>
+            <MembershipCards></MembershipCards>
+          </PrivateRoute>
+        ),
       },
       {
         path: "/system",
-        element: <ChatbotContent></ChatbotContent>,
+        element: (
+          <PrivateRoute>
+            <ChatbotContent></ChatbotContent>{" "}
+          </PrivateRoute>
+        ),
       },
     ],
   },

@@ -18,7 +18,7 @@ const AdminDashboard = () => {
   const { data: dashboardData } = useGetDashboardQuery();
   const { data: chart = [] } = useGetChartQuery();
 
-  // ✅ Map API data -> keep raw month & convert for display
+  // Map API data -> keep raw month & convert for display
   const data = chart.map((item) => {
     const [year, month] = item.month.split("-");
     const date = new Date(year, month - 1); // month is 0-indexed
@@ -110,11 +110,11 @@ const AdminDashboard = () => {
             </defs>
             <CartesianGrid strokeDasharray="3 3" />
 
-            {/* ✅ Show short month on X-axis */}
+            {/*  Show short month on X-axis */}
             <XAxis dataKey="shortMonth" />
 
             <YAxis />
-            {/* ✅ Tooltip will still show full month */}
+            {/*  Tooltip will still show full month */}
             <Tooltip
               formatter={(value, name) => [value, "Jobs"]}
               labelFormatter={(label, payload) => {

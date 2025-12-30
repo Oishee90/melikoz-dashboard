@@ -7,7 +7,7 @@ import Header from "./Header";
 
 const Root = () => {
   return (
-    <div className="flex h-screen bg-white dark:bg-[#1F2937]">
+    <div className="flex h-screen bg-white ">
       {/* Sidebar - Fixed Position */}
       <div className="w-[280px] fixed left-0 top-0 h-screen">
         <AdminSidebar></AdminSidebar>
@@ -19,7 +19,7 @@ const Root = () => {
         <Header></Header>
 
         {/* Dynamically Render Child Components */}
-        <main className="flex-1 bg-white dark:bg-[#1F2937] p-4 overflow-y-auto">
+        <main className="flex-1 p-4 overflow-y-auto bg-white">
           <Outlet />
         </main>
       </div>

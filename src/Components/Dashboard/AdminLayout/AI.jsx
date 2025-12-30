@@ -1,62 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { FaSearch } from "react-icons/fa";
-import { use } from "react";
 import { useGetAIfeedbackQuery } from "../../../Redux/feature/auth/authapi";
 
-// Updated Feedback Data
-const fakeFeedback = [
-  {
-    id: "FBK001",
-    date: "2025-07-01",
-    type: "Service Quality",
-    urgency: 8.5,
-    summary: "Client was highly satisfied with timely response and clarity.",
-  },
-  {
-    id: "FBK002",
-    date: "2025-07-03",
-    type: "Delays",
-    urgency: 6.0,
-    summary: "Minor delay reported in document processing.",
-  },
-  {
-    id: "FBK003",
-    date: "2025-07-05",
-    type: "Communication",
-    urgency: 9.2,
-    summary: "Client noted poor responsiveness from the provider.",
-  },
-  {
-    id: "FBK004",
-    date: "2025-07-10",
-    type: "Technical Issue",
-    urgency: 4.3,
-    summary: "A form submission error was quickly resolved.",
-  },
-  {
-    id: "FBK005",
-    date: "2025-07-12",
-    type: "Positive Review",
-    urgency: 2.1,
-    summary: "Client left excellent remarks about the agent’s behavior.",
-  },
-];
-
 const AI = () => {
-  // const [feedback, setFeedback] = useState(fakeFeedback);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
   const { data: feedback = [] } = useGetAIfeedbackQuery();
+
+  // Reset to page 1 whenever search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   const filteredFeedback = feedback.filter((f) =>
-    f?.id?.toString().includes(searchTerm.toLowerCase())
+    f?.id?.toString().toLowerCase().includes(searchTerm.toLowerCase().trim())
   );
 
+  const totalPages = Math.ceil(filteredFeedback.length / itemsPerPage);
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentItems = filteredFeedback.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(filteredFeedback.length / itemsPerPage);
 
   return (
     <div className="container p-6 mx-auto">
@@ -82,8 +47,7 @@ const AI = () => {
             <tr className="text-left font-medium text-xl text-[#303030] border-b border-b-[#C1C1C1]">
               <th className="px-4 py-4">Feedback ID</th>
               <th className="px-4 py-4">Date</th>
-              <th className="px-4 py-4">Type</th>
-              {/* <th className="px-4 py-4">Urgency Score</th> */}
+              {/* <th className="px-4 py-4">Type</th> */}
               <th className="px-4 py-4">Summary</th>
             </tr>
           </thead>
@@ -95,10 +59,7 @@ const AI = () => {
               >
                 <td className="px-4 py-4">{item.id || "N/A"}</td>
                 <td className="px-4 py-4">{item.date || "N/A"}</td>
-                <td className="px-4 py-4">{item.booking_type || "N/A"}</td>
-                {/* <td className="px-4 py-4 text-[#F8322F]">
-                  {item.urgency || "N/A"}
-                </td> */}
+                {/* <td className="px-4 py-4">{item.booking_type || "N/A"}</td> */}
                 <td className="px-4 py-4">{item.description || "N/A"}</td>
               </tr>
             ))}
@@ -113,22 +74,96 @@ const AI = () => {
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-end gap-2 mt-4">
-        {[...Array(totalPages).keys()].map((num) => (
+      {/* RESPONSIVE & CLEAN PAGINATION - ONLY THIS PART IS CHANGED */}
+      {totalPages > 1 && (
+        <div className="flex flex-wrap items-center justify-end gap-2 mt-6">
+          {/* Previous Button */}
           <button
-            key={num}
-            onClick={() => setCurrentPage(num + 1)}
-            className={`px-3 py-1 rounded border text-sm ${
-              currentPage === num + 1
-                ? "bg-blue-500 text-white"
-                : "bg-white text-gray-700 border-gray-300"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              currentPage === 1
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-white border border-gray-300 hover:bg-gray-50 text-gray-700"
             }`}
           >
-            {num + 1}
+            Previous
           </button>
-        ))}
-      </div>
+
+          <div className="flex items-center gap-1">
+            {/* First Page */}
+            <button
+              onClick={() => setCurrentPage(1)}
+              className={`px-4 py-2.5 rounded-lg text-sm font-medium ${
+                currentPage === 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-white border border-gray-300 text-gray-700"
+              }`}
+            >
+              1
+            </button>
+
+            {/* Left Ellipsis */}
+            {currentPage > 4 && <span className="px-2 text-gray-500">...</span>}
+
+            {/* Middle Pages (current ±1) */}
+            {(() => {
+              const pages = [];
+              const start = Math.max(2, currentPage - 1);
+              const end = Math.min(totalPages - 1, currentPage + 1);
+
+              for (let i = start; i <= end; i++) {
+                pages.push(
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i)}
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium ${
+                      currentPage === i
+                        ? "bg-blue-500 text-white"
+                        : "bg-white border border-gray-300 text-gray-700"
+                    }`}
+                  >
+                    {i}
+                  </button>
+                );
+              }
+              return pages;
+            })()}
+
+            {/* Right Ellipsis */}
+            {currentPage < totalPages - 3 && (
+              <span className="px-2 text-gray-500">...</span>
+            )}
+
+            {/* Last Page */}
+            {totalPages > 1 && (
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                className={`px-4 py-2.5 rounded-lg text-sm font-medium ${
+                  currentPage === totalPages
+                    ? "bg-blue-500 text-white"
+                    : "bg-white border border-gray-300 text-gray-700"
+                }`}
+              >
+                {totalPages}
+              </button>
+            )}
+          </div>
+
+          {/* Next Button */}
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              currentPage === totalPages
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-white border border-gray-300 hover:bg-gray-50 text-gray-700"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -2,12 +2,10 @@ import React from "react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { FaSearch } from "react-icons/fa";
-import { FaUserAlt } from "react-icons/fa";
 import {
   useDeleteUserMutation,
   useGetUserQuery,
 } from "../../../Redux/feature/auth/authapi";
-import { u } from "framer-motion/client";
 
 const User = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,6 +13,7 @@ const User = () => {
   const usersPerPage = 6;
   const { data: users = [], refetch } = useGetUserQuery();
   const [deleteUser] = useDeleteUserMutation();
+
   // Filtered & Paginated Users
   const filteredUsers = users.filter((user) =>
     user?.name?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -37,7 +36,6 @@ const User = () => {
       if (result.isConfirmed) {
         try {
           await deleteUser(id).unwrap();
-
           refetch();
           Swal.fire({
             title: "Deleted!",
@@ -64,14 +62,17 @@ const User = () => {
             placeholder="Search..."
             className="px-3 py-1 pl-8 border border-[#303030] rounded-lg"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // reset to first page on search
+            }}
           />
           <FaSearch className="absolute left-2 top-2.5 text-gray-400" />
         </div>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white rounded-lg shadow  border border-[#C1C1C1]">
+      <div className="overflow-x-auto bg-white rounded-lg shadow border border-[#C1C1C1]">
         <table className="min-w-full table-auto roboto">
           <thead>
             <tr className="text-left font-medium text-xl text-[#303030] border-b border-b-[#C1C1C1]">
@@ -93,11 +94,11 @@ const User = () => {
                 <td className="px-4 py-4">{user.role}</td>
                 <td className="px-4 py-4">
                   {user.is_verified === true ? (
-                    <span className="px-2 py-1 cursor-pointer text-base bg-[#6EEFC5] text-white rounded-lg text-bas">
+                    <span className="px-2 py-1 cursor-pointer text-base bg-[#6EEFC5] text-white rounded-lg">
                       Verified
                     </span>
                   ) : (
-                    <span className="px-2 py-1 text-base cursor-pointer bg-[#FFCA6D] text-white  rounded-lg">
+                    <span className="px-2 py-1 text-base cursor-pointer bg-[#FFCA6D] text-white rounded-lg">
                       Pending
                     </span>
                   )}
@@ -123,22 +124,99 @@ const User = () => {
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-end gap-2 mt-4">
-        {[...Array(totalPages).keys()].map((num) => (
+      {/* Pagination - FIXED */}
+      {totalPages > 1 && (
+        <div className="flex flex-wrap justify-end gap-2 mt-4">
+          {/* Previous */}
           <button
-            key={num}
-            onClick={() => setCurrentPage(num + 1)}
-            className={`px-3 py-1 rounded border text-sm ${
-              currentPage === num + 1
-                ? "bg-blue-500 text-white"
-                : "bg-white text-gray-700 border-gray-300"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 rounded text-sm font-medium ${
+              currentPage === 1
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
             }`}
           >
-            {num + 1}
+            Previous
           </button>
-        ))}
-      </div>
+
+          {/* Page numbers */}
+          <div className="flex items-center gap-1">
+            {/* First page */}
+            {totalPages > 1 && (
+              <button
+                onClick={() => setCurrentPage(1)}
+                className={`px-3 py-2 rounded text-sm ${
+                  currentPage === 1
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-gray-700 border border-gray-300"
+                }`}
+              >
+                1
+              </button>
+            )}
+
+            {/* Left ellipsis */}
+            {currentPage > 4 && <span className="px-2 text-gray-500">...</span>}
+
+            {/* Pages around current */}
+            {(() => {
+              const pages = [];
+              const start = Math.max(2, currentPage - 1);
+              const end = Math.min(totalPages - 1, currentPage + 1);
+
+              for (let i = start; i <= end; i++) {
+                pages.push(
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i)}
+                    className={`px-3 py-2 rounded text-sm ${
+                      currentPage === i
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-gray-700 border border-gray-300"
+                    }`}
+                  >
+                    {i}
+                  </button>
+                );
+              }
+              return pages;
+            })()}
+
+            {/* Right ellipsis */}
+            {currentPage < totalPages - 3 && (
+              <span className="px-2 text-gray-500">...</span>
+            )}
+
+            {/* Last page */}
+            {totalPages > 1 && (
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                className={`px-3 py-2 rounded text-sm ${
+                  currentPage === totalPages
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-gray-700 border border-gray-300"
+                }`}
+              >
+                {totalPages}
+              </button>
+            )}
+          </div>
+
+          {/* Next */}
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 rounded text-sm font-medium ${
+              currentPage === totalPages
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

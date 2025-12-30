@@ -7,7 +7,6 @@ export default function EditPlanModal({ open, onClose, plan }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="w-full max-w-md p-6 bg-white shadow-xl rounded-xl">
-        
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Edit Membership Cost</h2>
@@ -21,7 +20,6 @@ export default function EditPlanModal({ open, onClose, plan }) {
 
         {/* Form */}
         <div className="space-y-4">
-
           {/* Plan Name (Read Only) */}
           <div>
             <label className="block mb-1 text-sm font-medium">Plan Name</label>
@@ -56,14 +54,8 @@ export default function EditPlanModal({ open, onClose, plan }) {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-3 mt-6">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-gray-700 border rounded-lg hover:bg-gray-100"
-          >
-            Cancel
-          </button>
-          <button className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+        <div className="flex w-full gap-3 mt-6">
+          <button className="px-4 py-2 text-white bg-[#1290D9] hover:bg-[#1075af] rounded-lg w-full ">
             Save Changes
           </button>
         </div>
